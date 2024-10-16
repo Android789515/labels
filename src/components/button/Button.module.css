@@ -1,6 +1,7 @@
 .buttonDefaults {
    background: none;
-   padding: 0;
+   padding: .2em .5em;
+
    border: none;
    border-radius: .125em;
 }
