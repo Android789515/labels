@@ -1,11 +1,17 @@
+import downloadIcon from './assets/download.svg';
 import styles from './DownloadButton.module.css';
 
-import { Button } from 'components/button';
+import { IconButton } from 'components/icon-button';
 
 export const DownloadButton = () => {
    return (
-      <Button
-         className={styles.downloadButton}
-      ></Button>
+      <IconButton
+         customStyles={{
+            button: styles.downloadButton,
+            icon: styles.downloadIcon,
+         }}
+         icon={downloadIcon}
+         description={'Download'}
+      ></IconButton>
    );
 };

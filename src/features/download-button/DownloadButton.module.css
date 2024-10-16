@@ -1,1 +1,17 @@
-.downloadButton {}
+.downloadButton.downloadButton {
+   background: rgb(17, 228, 17);
+   padding: .5em;
+}
+
+.downloadButton.downloadButton:focus,
+.downloadButton.downloadButton:hover {
+   background: rgb(73, 236, 73);
+}
+
+.downloadButton.downloadButton:active {
+   background: rgb(17, 228, 17);
+}
+
+.downloadIcon.downloadIcon {
+   filter: invert(1);
+}
