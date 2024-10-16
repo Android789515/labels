@@ -3,5 +3,5 @@
    padding: .2em .5em;
 
    border: none;
-   border-radius: .125em;
+   border-radius: var(--borderRadius);
 }
