@@ -1,8 +1,7 @@
 .title {
    font-size: 1.4rem;
 
-   grid-column: span 2;
-   justify-self: end;
+   justify-self: center;
 
    margin: 0;
 }
