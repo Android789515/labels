@@ -1,1 +1,8 @@
-.header {}
+.header {
+   display: grid;
+   grid-template-columns: repeat(3, 1fr);
+   align-items: center;
+
+   background: #f7f7f7;
+   border-bottom: var(--border);
+}
