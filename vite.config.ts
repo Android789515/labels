@@ -10,6 +10,7 @@ export default defineConfig({
       alias: {
          'types': resolve('./src/types.ts'),
          'components': resolve('./src/components'),
+         'features': resolve('./src/features'),
       },
    },
 });
