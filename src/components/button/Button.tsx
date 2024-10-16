@@ -1,17 +1,21 @@
 import { type HTMLAttributes } from 'react';
 
-type Props = HTMLAttributes<HTMLButtonElement>;
+import { type ClassName } from 'types';
 
-export const Button = (props: Props) => {
+import styles from './Button.module.css';
+
+interface Props extends HTMLAttributes<HTMLButtonElement> {
+   customStyles?: ClassName;
+}
+
+export const Button = ({ customStyles, ...rest }: Props) => {
    return (
       <button
-         style={{
-            background: 'none',
-            padding: 0,
-            border: 'none',
-            borderRadius: '.125em',
-         }}
-         {...props}
+         className={`
+            ${styles.buttonDefaults}
+            ${customStyles}
+         `}
+         {...rest}
       ></button>
    );
 };
