@@ -8,6 +8,7 @@ export default defineConfig({
    plugins: [ react() ],
    resolve: {
       alias: {
+         'types': resolve('./src/types.ts'),
          'components': resolve('./src/components'),
       },
    },
