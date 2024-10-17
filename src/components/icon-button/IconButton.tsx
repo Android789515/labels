@@ -7,23 +7,21 @@ import { Button } from 'components/button';
 interface Props extends HTMLAttributes<HTMLButtonElement> {
    icon: string;
    description: string;
-   customStyles?: {
-      button: ClassName;
-      icon: ClassName;
-   };
+   buttonStyles?: ClassName;
+   iconStyles?: ClassName;
    iconProps?: HTMLAttributes<HTMLImageElement>;
 }
 
-export const IconButton = ({ icon, description, customStyles, iconProps, ...rest }: Props) => {
+export const IconButton = ({ icon, description, buttonStyles, iconStyles, iconProps, ...rest }: Props) => {
    return (
       <Button
-         customStyles={customStyles?.button}
+         customStyles={buttonStyles}
          {...rest}
       >
          <img
             src={icon}
             alt={description}
-            className={customStyles?.icon}
+            className={iconStyles}
             {...iconProps}
          />
       </Button>

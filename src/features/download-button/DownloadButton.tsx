@@ -6,10 +6,8 @@ import { IconButton } from 'components/icon-button';
 export const DownloadButton = () => {
    return (
       <IconButton
-         customStyles={{
-            button: styles.downloadButton,
-            icon: styles.downloadIcon,
-         }}
+         buttonStyles={styles.downloadButton}
+         iconStyles={styles.downloadIcon}
          icon={downloadIcon}
          description={'Download'}
       ></IconButton>
