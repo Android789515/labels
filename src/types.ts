@@ -1,4 +1,4 @@
-import { type Dispatch, type SetStateAction } from 'react';
+import { type ReactNode, type Dispatch, type SetStateAction } from 'react';
 
 export type ClassName = string;
 
