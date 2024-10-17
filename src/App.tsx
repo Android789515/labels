@@ -1,3 +1,7 @@
+import { useState } from 'react';
+
+import { type Label } from 'types';
+
 import styles from './App.module.css';
 
 import { Layout } from 'components/layout';
@@ -7,6 +11,8 @@ import { DownloadButton } from 'features/download-button';
 import { Workspace } from 'features/workspace';
 
 export const App = () => {
+   const [ labels, setLabels ] = useState<Label[]>([]);
+
    return (
       <div
          className={styles.app}
@@ -21,7 +27,7 @@ export const App = () => {
             <Workspace
                mode={'basic'}
                labels={labels}
-               setLabels={setLabels}
+               setLabels={newLabels => setLabels(newLabels)}
             />
          </Layout>
       </div>
