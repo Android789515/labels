@@ -15,10 +15,13 @@ interface Props {
    itemStyles?: ClassName;
 }
 
-export const List = ({ data, itemStyles }: Props) => {
+export const List = ({ data, listStyles, itemStyles }: Props) => {
    return (
       <ul
-         className={styles.listDefaults}
+         className={`
+            ${styles.listDefaults}
+            ${listStyles}
+         `}
       >
          {data.map(item => {
             return (
