@@ -6,16 +6,17 @@ import styles from './List.module.css';
 
 interface BasicItem {
    id: UUID;
-   component: ReactNode;
 }
 
-interface Props {
-   data: BasicItem[];
+interface Props<DataType extends BasicItem> {
+   data: DataType[];
    listStyles?: ClassName;
    itemStyles?: ClassName;
+   renderItem: (data: DataType) => ReactNode;
 }
 
-export const List = ({ data, listStyles, itemStyles }: Props) => {
+export const List = <DataType extends BasicItem,>({ data, listStyles, itemStyles, renderItem }: Props<DataType>) => {
+
    return (
       <ul
          className={`
@@ -29,7 +30,7 @@ export const List = ({ data, listStyles, itemStyles }: Props) => {
                   key={item.id}
                   className={itemStyles}
                >
-                  {item.component}
+                  {renderItem(item)}
                </li>
             );
          })}
