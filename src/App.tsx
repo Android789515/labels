@@ -18,7 +18,11 @@ export const App = () => {
                <DownloadButton />
             </Header>
 
-            <Workspace />
+            <Workspace
+               mode={'basic'}
+               labels={labels}
+               setLabels={setLabels}
+            />
          </Layout>
       </div>
    );
