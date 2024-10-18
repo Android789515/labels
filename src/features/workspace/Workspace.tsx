@@ -2,7 +2,9 @@ import { type Label, type SetLabels } from 'types';
 
 import styles from './Workspace.module.css';
 
-export const Workspace = () => {
+import { LabelList } from 'features/label-list';
+import { Editor } from 'features/editor';
+
 interface Props {
    mode: 'basic' | 'advanced';
    labels: Label[];
@@ -12,7 +14,22 @@ interface Props {
 export const Workspace = ({ mode, labels, setLabels }: Props) => {
    return (
       <div
-         className={styles.workspace}
-      ></div>
+         className={`
+            ${ mode === 'basic'
+               ? styles.workspaceBasic
+               : styles.workspaceAdvanced
+            }
+         `}
+      >
+         { mode === 'advanced'
+            ? <LabelList
+               labels={labels}
+               setLabels={setLabels}
+            />
+            : <Editor
+               setLabels={setLabels}
+            />
+         }
+      </div>
    );
 };

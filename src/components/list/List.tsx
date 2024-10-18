@@ -12,7 +12,7 @@ interface Props<DataType extends BasicItem> {
    data: DataType[];
    listStyles?: ClassName;
    itemStyles?: ClassName;
-   renderItem: (data: DataType) => ReactNode;
+   renderItem: (data: DataType, index: number) => ReactNode;
 }
 
 export const List = <DataType extends BasicItem,>({ data, listStyles, itemStyles, renderItem }: Props<DataType>) => {
@@ -24,13 +24,13 @@ export const List = <DataType extends BasicItem,>({ data, listStyles, itemStyles
             ${listStyles}
          `}
       >
-         {data.map(item => {
+         {data.map((item, index) => {
             return (
                <li
                   key={item.id}
                   className={itemStyles}
                >
-                  {renderItem(item)}
+                  {renderItem(item, index)}
                </li>
             );
          })}

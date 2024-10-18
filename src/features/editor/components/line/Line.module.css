@@ -1,0 +1,16 @@
+.line {
+   display: grid;
+   grid-template-columns: 1em 1fr;
+   column-gap: 1em;
+
+   margin: 0;
+}
+
+.lineNumber {
+}
+
+.lineContent {
+   cursor: text;
+
+   outline: none;
+}
