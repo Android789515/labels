@@ -43,7 +43,7 @@ export const Editor = ({ setLabels }: Props) => {
       setLabels(labels);
    };
 
-   useEffect(previewExpressionResult, [ expressionLines, setLabels ]);
+   useEffect(previewExpressionResult, [ expressionLines ]);
 
    const addLine = () => {
       setExpressionLines(prevLines => {
