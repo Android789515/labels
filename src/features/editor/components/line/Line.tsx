@@ -69,6 +69,7 @@ export const Line = ({ line, addLine, removeLine, updateLine }: Props) => {
          <span
             className={styles.lineContent}
             contentEditable
+            suppressContentEditableWarning
             onInput={event => updateLine(line.id, event)}
             onKeyDown={keyHandlers}
             ref={lineContentRef}
