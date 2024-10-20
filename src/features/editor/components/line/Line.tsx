@@ -73,7 +73,11 @@ export const Line = ({ line, addLine, removeLine, updateLine }: Props) => {
    const keyHandlers = handleKeyDown([
       {
          key: 'Enter',
-         onPress: () => addLine(actualLineNumber),
+         onPress: event => {
+            event.preventDefault();
+
+            addLine(actualLineNumber);
+         },
          state: doNothing,
       },
       {

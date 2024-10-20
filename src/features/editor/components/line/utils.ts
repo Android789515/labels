@@ -24,9 +24,7 @@ export const handleKeyDown = (actions: LineAction[]) => {
 
       actions.forEach(action => {
          if (event.key === action.key) {
-            event.preventDefault();
-
-            action.onPress();
+            action.onPress(event);
 
             switch (action.state[0]) {
                case 'focus':

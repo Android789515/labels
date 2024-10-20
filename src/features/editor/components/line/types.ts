@@ -1,3 +1,5 @@
+import { type KeyboardEvent } from 'react';
+
 export type LineFocusState = [
    'focus' | 'blur' | '',
    number,
@@ -5,6 +7,6 @@ export type LineFocusState = [
 
 export interface LineAction {
    key: string;
-   onPress: () => void;
+   onPress: (event: KeyboardEvent) => void;
    state: LineFocusState;
 }
