@@ -1,6 +1,7 @@
-import { type FormEvent, type KeyboardEvent, useEffect, useRef } from 'react';
+import { type FormEvent, useEffect, useRef } from 'react';
 
 import { type UUID } from 'types';
+import { focusOnMount, handleKeyDown } from './utils';
 
 import styles from './Line.module.css';
 
@@ -18,56 +19,32 @@ interface Props {
 export const Line = ({ line, addLine, removeLine, updateLine }: Props) => {
    const lineContentRef = useRef<HTMLSpanElement>(null);
 
-   const focusOnMount = () => {
+   const onMount = () => {
       if (lineContentRef.current) {
-         lineContentRef.current.focus();
+         focusOnMount(lineContentRef.current);
       }
    };
 
-   useEffect(focusOnMount, []);
+   useEffect(onMount, []);
 
-   const blurCurrentLine = () => {
-      if (lineContentRef.current) {
-         lineContentRef.current.blur();
-      }
-   };
-
-   const focusPreviousLine = (currentLine: HTMLSpanElement) => {
-      const previousLine = currentLine.parentNode?.parentNode?.previousSibling;
-
-      if (previousLine) {
-         const previousLineContent = previousLine.firstChild?.lastChild as HTMLSpanElement;
-
-         previousLineContent.focus();
-      }
-   };
-
-   const handleKeyDown = (event: KeyboardEvent) => {
-      switch (event.key) {
-         case 'Enter': {
-            event.preventDefault();
-            addLine();
-            blurCurrentLine();
-
-            break;
-         }
-
-         case 'Backspace': {
+   const keyHandlers = handleKeyDown([
+      {
+         key: 'Enter',
+         onPress: addLine,
+         state: 'blurCurrent',
+      },
+      {
+         key: 'Backspace',
+         onPress: () => {
             const noLineContent = !line.content;
 
             if (noLineContent) {
-               event.preventDefault();
                removeLine(line.id);
-               focusPreviousLine(event.target as HTMLSpanElement);
             }
-
-            break;
-         }
-
-         default:
-            break;
+         },
+         state: 'focusPrev',
       }
-   };
+   ]);
 
    return (
       <p
@@ -83,7 +60,7 @@ export const Line = ({ line, addLine, removeLine, updateLine }: Props) => {
             className={styles.lineContent}
             contentEditable
             onInput={event => updateLine(line.id, event)}
-            onKeyDown={handleKeyDown}
+            onKeyDown={keyHandlers}
             ref={lineContentRef}
          >
             {line.content}
