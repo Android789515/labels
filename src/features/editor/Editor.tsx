@@ -45,11 +45,12 @@ export const Editor = ({ setLabels }: Props) => {
 
    useEffect(previewExpressionResult, [ expressionLines ]);
 
-   const addLine = () => {
+   const addLine = (lineIndex: number) => {
       setExpressionLines(prevLines => {
          return [
-            ...prevLines,
+            ...prevLines.slice(0, lineIndex + 1),
             newBlankLine(),
+            ...prevLines.slice(lineIndex + 1),
          ];
       });
    };

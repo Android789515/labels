@@ -12,7 +12,7 @@ interface Props {
       number: number;
       content: string;
    };
-   addLine: () => void;
+   addLine: (lineIndex: number) => void;
    removeLine: (lineID: UUID) => void;
    updateLine: (lineID: UUID, event: FormEvent<HTMLSpanElement>) => void;
 }
@@ -35,7 +35,7 @@ export const Line = ({ line, addLine, removeLine, updateLine }: Props) => {
    const keyHandlers = handleKeyDown([
       {
          key: 'Enter',
-         onPress: addLine,
+         onPress: () => addLine(actualLineNumber),
          state: doNothing,
       },
       {
