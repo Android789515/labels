@@ -1,5 +1,8 @@
 export interface LineAction {
    key: string;
    onPress: () => void;
-   state: 'focusPrev' | 'blurCurrent' | '';
+   state: [
+      'focus' | 'blur',
+      number,
+   ];
 }

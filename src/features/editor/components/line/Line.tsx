@@ -31,7 +31,7 @@ export const Line = ({ line, addLine, removeLine, updateLine }: Props) => {
       {
          key: 'Enter',
          onPress: addLine,
-         state: 'blurCurrent',
+         state: [ 'blur', line.number + 1 ],
       },
       {
          key: 'Backspace',
@@ -42,7 +42,17 @@ export const Line = ({ line, addLine, removeLine, updateLine }: Props) => {
                removeLine(line.id);
             }
          },
-         state: 'focusPrev',
+         state: [ 'focus', line.number - 1 ],
+      },
+      {
+         key: 'ArrowUp',
+         onPress: () => {},
+         state: [ 'focus', line.number - 1 ],
+      },
+      {
+         key: 'ArrowDown',
+         onPress: () => {},
+         state: [ 'focus', line.number + 1 ],
       }
    ]);
 

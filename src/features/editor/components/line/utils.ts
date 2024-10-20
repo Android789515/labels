@@ -6,18 +6,14 @@ export const focusOnMount = (lineContent: HTMLSpanElement) => {
    lineContent.focus();
 };
 
-const blurCurrentLine = (lineContent: HTMLSpanElement) => {
-   lineContent.blur();
-};
+const getLineByNumber = (lineNumber: number, lineContent: HTMLSpanElement) => {
+   const lines = lineContent.parentNode!.parentNode!.parentNode!;
 
-const focusPreviousLine = (currentLine: HTMLSpanElement) => {
-   const previousLine = currentLine.parentNode?.parentNode?.previousSibling;
+   const lineToFocus = lines.childNodes[ lineNumber - 1 ];
 
-   if (previousLine) {
-      const previousLineContent = previousLine.firstChild?.lastChild as HTMLSpanElement;
+   const nextLineContent = lineToFocus.firstChild?.lastChild as HTMLSpanElement;
 
-      previousLineContent.focus();
-   }
+   return nextLineContent;
 };
 
 export const handleKeyDown = (actions: LineAction[]) => {
@@ -30,13 +26,13 @@ export const handleKeyDown = (actions: LineAction[]) => {
 
             action.onPress();
 
-            switch (action.state) {
-               case 'focusPrev':
-                  focusPreviousLine(lineElement);
+            switch (action.state[0]) {
+               case 'focus':
+                  getLineByNumber(action.state[1], lineElement).focus();
                   break;
 
-               case 'blurCurrent':
-                  blurCurrentLine(lineElement);
+               case 'blur':
+                  getLineByNumber(action.state[1], lineElement).blur();
                   break;
 
                default:
