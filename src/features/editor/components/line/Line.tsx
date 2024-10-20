@@ -2,7 +2,7 @@ import { type FormEvent, useEffect, useRef } from 'react';
 
 import { type UUID } from 'types';
 import { type LineFocusState } from './types';
-import { focusOnMount, handleKeyDown } from './utils';
+import { focusOnMount, setLineCursor, handleKeyDown } from './utils';
 
 import styles from './Line.module.css';
 
@@ -49,18 +49,7 @@ export const Line = ({ line, addLine, removeLine, updateLine }: Props) => {
 
    const loadCursorPosition = () => {
       if (lineContentRef.current && cursorPositionRef.current !== null) {
-         const selection = window.getSelection();
-         const range = document.createRange();
-
-         const lines = lineContentRef.current.childNodes;
-
-         if (lines.length) {
-            range.setStart(lines[0], cursorPositionRef.current);
-   
-            range.collapse(true);
-            selection?.removeAllRanges();
-            selection?.addRange(range);
-         }
+         setLineCursor(lineContentRef.current, cursorPositionRef.current);
       }
    };
 

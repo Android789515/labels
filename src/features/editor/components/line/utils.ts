@@ -18,6 +18,22 @@ const getLineByNumber = (lineNumber: number, lineContent: HTMLSpanElement) => {
    }
 };
 
+export const setLineCursor = (lineContent: HTMLElement, position: number) => {
+   const selection = window.getSelection();
+
+   const range = document.createRange();
+
+   const hasText = lineContent.childNodes.length;
+   
+   if (hasText) {
+      range.setStart(lineContent.childNodes[0], position);
+      range.collapse(true);
+   
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+   }
+};
+
 export const handleKeyDown = (actions: LineAction[]) => {
    return (event: KeyboardEvent) => {
       const lineElement = event.target as HTMLSpanElement;
