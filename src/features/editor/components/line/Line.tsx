@@ -1,6 +1,7 @@
 import { type FormEvent, useEffect, useRef } from 'react';
 
 import { type UUID } from 'types';
+import { type LineFocusState } from './types';
 import { focusOnMount, handleKeyDown } from './utils';
 
 import styles from './Line.module.css';
@@ -27,11 +28,15 @@ export const Line = ({ line, addLine, removeLine, updateLine }: Props) => {
 
    useEffect(onMount, []);
 
+   const actualLineNumber = line.number - 1;
+
+   const doNothing: LineFocusState = [ '', 0 ];
+
    const keyHandlers = handleKeyDown([
       {
          key: 'Enter',
          onPress: addLine,
-         state: [ 'blur', line.number + 1 ],
+         state: doNothing,
       },
       {
          key: 'Backspace',
@@ -42,17 +47,17 @@ export const Line = ({ line, addLine, removeLine, updateLine }: Props) => {
                removeLine(line.id);
             }
          },
-         state: [ 'focus', line.number - 1 ],
+         state: !line.content ? [ 'focus', actualLineNumber - 1 ] : doNothing,
       },
       {
          key: 'ArrowUp',
          onPress: () => {},
-         state: [ 'focus', line.number - 1 ],
+         state: [ 'focus', actualLineNumber - 1 ],
       },
       {
          key: 'ArrowDown',
          onPress: () => {},
-         state: [ 'focus', line.number + 1 ],
+         state: [ 'focus', actualLineNumber + 1 ],
       }
    ]);
 

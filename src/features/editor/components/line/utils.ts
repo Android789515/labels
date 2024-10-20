@@ -9,11 +9,13 @@ export const focusOnMount = (lineContent: HTMLSpanElement) => {
 const getLineByNumber = (lineNumber: number, lineContent: HTMLSpanElement) => {
    const lines = lineContent.parentNode!.parentNode!.parentNode!;
 
-   const lineToFocus = lines.childNodes[ lineNumber - 1 ];
+   const lineToFocus = lines.childNodes[ lineNumber ];
 
-   const nextLineContent = lineToFocus.firstChild?.lastChild as HTMLSpanElement;
+   if (lineToFocus) {
+      const nextLineContent = lineToFocus.firstChild?.lastChild as HTMLSpanElement;
 
-   return nextLineContent;
+      return nextLineContent;
+   }
 };
 
 export const handleKeyDown = (actions: LineAction[]) => {
@@ -28,11 +30,11 @@ export const handleKeyDown = (actions: LineAction[]) => {
 
             switch (action.state[0]) {
                case 'focus':
-                  getLineByNumber(action.state[1], lineElement).focus();
+                  getLineByNumber(action.state[1], lineElement)?.focus();
                   break;
 
                case 'blur':
-                  getLineByNumber(action.state[1], lineElement).blur();
+                  getLineByNumber(action.state[1], lineElement)?.blur();
                   break;
 
                default:
