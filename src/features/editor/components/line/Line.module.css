@@ -6,11 +6,18 @@
    margin: 0;
 }
 
-.lineNumber {
+.lineNumber,
+.lineContent {
+   padding: .25em .5em;
 }
 
 .lineContent {
    cursor: text;
 
+   border-radius: var(--borderRadius);
    outline: none;
+}
+
+.lineContent:focus {
+   background: #eee;
 }
