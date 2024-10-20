@@ -28,6 +28,44 @@ export const Line = ({ line, addLine, removeLine, updateLine }: Props) => {
 
    useEffect(onMount, []);
 
+   const cursorPositionRef = useRef(0);
+
+   const saveCursorPosition = (event: FormEvent<HTMLSpanElement>) => {
+      const lineContent = event.target as HTMLSpanElement;
+
+      const selection = window.getSelection();
+      const range = selection?.getRangeAt(0);
+
+      if (range) {
+         const clonedRange = range.cloneRange();
+         clonedRange.selectNodeContents(lineContent);
+         clonedRange.setEnd(range.endContainer, range.endOffset);
+   
+         const cursorPosition = clonedRange.toString().length;
+
+         cursorPositionRef.current = cursorPosition;
+      }
+   };
+
+   const loadCursorPosition = () => {
+      if (lineContentRef.current && cursorPositionRef.current !== null) {
+         const selection = window.getSelection();
+         const range = document.createRange();
+
+         const lines = lineContentRef.current.childNodes;
+
+         if (lines.length) {
+            range.setStart(lines[0], cursorPositionRef.current);
+   
+            range.collapse(true);
+            selection?.removeAllRanges();
+            selection?.addRange(range);
+         }
+      }
+   };
+
+   useEffect(loadCursorPosition, [ line.content ]);
+
    const actualLineNumber = line.number - 1;
 
    const doNothing: LineFocusState = [ '', 0 ];
@@ -75,7 +113,11 @@ export const Line = ({ line, addLine, removeLine, updateLine }: Props) => {
             className={styles.lineContent}
             contentEditable
             suppressContentEditableWarning
-            onInput={event => updateLine(line.id, event)}
+            onInput={event => {
+               saveCursorPosition(event);
+
+               updateLine(line.id, event);
+            }}
             onKeyDown={keyHandlers}
             ref={lineContentRef}
          >
