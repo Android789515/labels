@@ -43,9 +43,25 @@ export const handleKeyDown = (actions: LineAction[]) => {
             action.onPress(event);
 
             switch (action.state[0]) {
-               case 'focus':
-                  getLineByNumber(action.state[1], lineElement)?.focus();
+               case 'focus': {
+                  const line = getLineByNumber(action.state[ 1 ], lineElement);
+
+                  if (line) {
+                     line.focus();
+                  }
                   break;
+               }
+
+               case 'focusFresh': {
+                  const line = getLineByNumber(action.state[ 1 ], lineElement);
+
+                  if (line) {
+                     line.focus();
+                     event.preventDefault();
+                     setLineCursor(line, line.textContent?.length || 0);
+                  }
+                  break;
+               }
 
                case 'blur':
                   getLineByNumber(action.state[1], lineElement)?.blur();

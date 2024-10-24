@@ -1,7 +1,7 @@
 import { type KeyboardEvent } from 'react';
 
 export type LineFocusState = [
-   'focus' | 'blur' | '',
+   'focus' | 'focusFresh' | 'blur' | '',
    number,
 ];
 

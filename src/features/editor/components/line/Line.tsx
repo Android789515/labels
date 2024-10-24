@@ -76,7 +76,7 @@ export const Line = ({ line, addLine, removeLine, updateLine }: Props) => {
                removeLine(line.id);
             }
          },
-         state: !line.content ? [ 'focus', actualLineNumber - 1 ] : doNothing,
+         state: !line.content ? [ 'focusFresh', actualLineNumber - 1 ] : doNothing,
       },
       {
          key: 'ArrowUp',
