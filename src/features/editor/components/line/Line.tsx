@@ -30,9 +30,7 @@ export const Line = ({ line, addLine, removeLine, updateLine }: Props) => {
 
    const cursorPositionRef = useRef(0);
 
-   const saveCursorPosition = (event: FormEvent<HTMLSpanElement>) => {
-      const lineContent = event.target as HTMLSpanElement;
-
+   const saveCursorPosition = (lineContent: HTMLSpanElement) => {
       const selection = window.getSelection();
       const range = selection?.getRangeAt(0);
 
@@ -93,7 +91,7 @@ export const Line = ({ line, addLine, removeLine, updateLine }: Props) => {
             event.preventDefault();
          },
          state: [ 'focus', actualLineNumber + 1 ],
-      }
+      },
    ]);
 
    return (
@@ -111,11 +109,17 @@ export const Line = ({ line, addLine, removeLine, updateLine }: Props) => {
             contentEditable
             suppressContentEditableWarning
             onInput={event => {
-               saveCursorPosition(event);
+               saveCursorPosition(event.target as HTMLSpanElement);
 
                updateLine(line.id, event);
             }}
             onKeyDown={keyHandlers}
+            onKeyUp={event => {
+               if (event.key.includes('Arrow')) {
+                  saveCursorPosition(event.target as HTMLSpanElement);
+               }
+            }}
+            onFocus={loadCursorPosition}
             ref={lineContentRef}
          >
             {line.content}
