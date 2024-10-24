@@ -82,12 +82,16 @@ export const Line = ({ line, addLine, removeLine, updateLine }: Props) => {
       },
       {
          key: 'ArrowUp',
-         onPress: () => {},
+         onPress: event => {
+            event.preventDefault();
+         },
          state: [ 'focus', actualLineNumber - 1 ],
       },
       {
          key: 'ArrowDown',
-         onPress: () => {},
+         onPress: event => {
+            event.preventDefault();
+         },
          state: [ 'focus', actualLineNumber + 1 ],
       }
    ]);
