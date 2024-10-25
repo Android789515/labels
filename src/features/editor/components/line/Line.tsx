@@ -1,7 +1,7 @@
 import { type FormEvent, type KeyboardEvent } from 'react';
 
 import { type Line as LineType, type SetLines, type KeyMap } from './types';
-import { addLine, removeLine, updateLine } from './utils';
+import { addLine, removeLine, updateLine } from '../../utils';
 
 import styles from './Line.module.css';
 

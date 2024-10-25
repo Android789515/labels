@@ -2,7 +2,7 @@ import { type FormEvent } from 'react';
 import { v4 as newUUID } from 'uuid';
 
 import { type UUID } from 'types';
-import { type Line } from './types';
+import { type Line } from './components/line/types';
 
 export const newBlankLine = () => {
    return {

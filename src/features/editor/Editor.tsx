@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { v4 as newUUID } from 'uuid';
 
 import { type SetLabels, type Label } from 'types';
-import { newBlankLine } from './components/line/utils';
+import { newBlankLine } from './utils';
 
 import styles from './Editor.module.css';
 
