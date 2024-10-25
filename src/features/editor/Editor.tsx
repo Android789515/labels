@@ -1,7 +1,8 @@
-import { type FormEvent, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { v4 as newUUID } from 'uuid';
 
-import { type SetLabels, type Label, type UUID } from 'types';
+import { type SetLabels, type Label } from 'types';
+import { newBlankLine } from './components/line/utils';
 
 import styles from './Editor.module.css';
 
@@ -13,17 +14,10 @@ interface Props {
 }
 
 export const Editor = ({ setLabels }: Props) => {
-   const newBlankLine = () => {
-      return {
-         id: newUUID(),
-         content: '',
-      };
-   };
-
-   const [ expressionLines, setExpressionLines ] = useState([newBlankLine()]);
+   const [ lines, setLines ] = useState([newBlankLine()]);
 
    const previewExpressionResult = () => {
-      const labels = expressionLines.reduce<Label[]>((labels, { content }) => {
+      const labels = lines.reduce<Label[]>((labels, { content }) => {
          const [ expression, amount ] = content.split(':');
 
          const newLabels = Array(amount).map(() => {
@@ -43,55 +37,14 @@ export const Editor = ({ setLabels }: Props) => {
       setLabels(labels);
    };
 
-   useEffect(previewExpressionResult, [ expressionLines ]);
-
-   const addLine = (lineIndex: number) => {
-      setExpressionLines(prevLines => {
-         return [
-            ...prevLines.slice(0, lineIndex + 1),
-            newBlankLine(),
-            ...prevLines.slice(lineIndex + 1),
-         ];
-      });
-   };
-
-   const removeLine = (lineID: UUID) => {
-      setExpressionLines(prevLines => {
-         return prevLines.filter(line => {
-            const keepLine = line.id !== lineID;
-            const atLeastOneLine = expressionLines.length === 1;
-
-            return keepLine
-               || atLeastOneLine;
-         });
-      });
-   };
-
-   const updateLine = (lineID: UUID, event: FormEvent<HTMLSpanElement>) => {
-      setExpressionLines(prevLines => {
-         return prevLines.map(line => {
-            const isLineToUpdate = line.id === lineID;
-
-            if (isLineToUpdate) {
-               const contentElement = event.target as HTMLSpanElement;
-
-               return {
-                  ...line,
-                  content: contentElement.textContent || '',
-               };
-            } else {
-               return line;
-            }
-         });
-      });
-   };
+   useEffect(previewExpressionResult, [ lines ]);
 
    return (
       <main
          className={styles.editor}
       >
          <List
-            data={expressionLines}
+            data={lines}
             listStyles={styles.lineNumbers}
             renderItem={(line, lineNumber) => {
                return (
@@ -100,9 +53,7 @@ export const Editor = ({ setLabels }: Props) => {
                         ...line,
                         number: lineNumber + 1,
                      }}
-                     addLine={addLine}
-                     removeLine={removeLine}
-                     updateLine={updateLine}
+                     setLines={setLines}
                   />
                );
             }}

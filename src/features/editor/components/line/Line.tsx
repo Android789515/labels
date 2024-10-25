@@ -1,98 +1,33 @@
-import { type FormEvent, useEffect, useRef } from 'react';
+import { type FormEvent, type KeyboardEvent } from 'react';
 
-import { type UUID } from 'types';
-import { type LineFocusState } from './types';
-import { focusOnMount, setLineCursor, handleKeyDown } from './utils';
+import { type Line as LineType, type SetLines, type KeyMap } from './types';
+import { addLine, removeLine, updateLine } from './utils';
 
 import styles from './Line.module.css';
 
 interface Props {
-   line: {
-      id: UUID;
-      number: number;
-      content: string;
-   };
-   addLine: (lineIndex: number) => void;
-   removeLine: (lineID: UUID) => void;
-   updateLine: (lineID: UUID, event: FormEvent<HTMLSpanElement>) => void;
+   line: LineType;
+   setLines: SetLines;
 }
 
-export const Line = ({ line, addLine, removeLine, updateLine }: Props) => {
-   const lineContentRef = useRef<HTMLSpanElement>(null);
-
-   const onMount = () => {
-      if (lineContentRef.current) {
-         focusOnMount(lineContentRef.current);
-      }
+export const Line = ({ line, setLines }: Props) => {
+   const handleInput = (event: FormEvent<HTMLSpanElement>) => {
+      setLines(updateLine(line.id, event));
    };
 
-   useEffect(onMount, []);
+   const handleKey = (event: KeyboardEvent) => {
+      const keymap: KeyMap = {
+         Enter: () => setLines(addLine(line.number - 1)),
+         Backspace: () => setLines(removeLine(line.id)),
+      };
 
-   const cursorPositionRef = useRef(0);
+      const wasKeyInMapPressed = Object.keys(keymap).includes(event.key);
 
-   const saveCursorPosition = (lineContent: HTMLSpanElement) => {
-      const selection = window.getSelection();
-      const range = selection?.getRangeAt(0);
-
-      if (range) {
-         const clonedRange = range.cloneRange();
-         clonedRange.selectNodeContents(lineContent);
-         clonedRange.setEnd(range.endContainer, range.endOffset);
-   
-         const cursorPosition = clonedRange.toString().length;
-
-         cursorPositionRef.current = cursorPosition;
+      if (wasKeyInMapPressed) {
+         event.preventDefault();
+         keymap[event.key](event);
       }
    };
-
-   const loadCursorPosition = () => {
-      if (lineContentRef.current && cursorPositionRef.current !== null) {
-         setLineCursor(lineContentRef.current, cursorPositionRef.current);
-      }
-   };
-
-   useEffect(loadCursorPosition, [ line.content ]);
-
-   const actualLineNumber = line.number - 1;
-
-   const doNothing: LineFocusState = [ '', 0 ];
-
-   const keyHandlers = handleKeyDown([
-      {
-         key: 'Enter',
-         onPress: event => {
-            event.preventDefault();
-
-            addLine(actualLineNumber);
-         },
-         state: doNothing,
-      },
-      {
-         key: 'Backspace',
-         onPress: () => {
-            const noLineContent = !line.content;
-
-            if (noLineContent) {
-               removeLine(line.id);
-            }
-         },
-         state: !line.content ? [ 'focusFresh', actualLineNumber - 1 ] : doNothing,
-      },
-      {
-         key: 'ArrowUp',
-         onPress: event => {
-            event.preventDefault();
-         },
-         state: [ 'focus', actualLineNumber - 1 ],
-      },
-      {
-         key: 'ArrowDown',
-         onPress: event => {
-            event.preventDefault();
-         },
-         state: [ 'focus', actualLineNumber + 1 ],
-      },
-   ]);
 
    return (
       <p
@@ -108,19 +43,8 @@ export const Line = ({ line, addLine, removeLine, updateLine }: Props) => {
             className={styles.lineContent}
             contentEditable
             suppressContentEditableWarning
-            onInput={event => {
-               saveCursorPosition(event.target as HTMLSpanElement);
-
-               updateLine(line.id, event);
-            }}
-            onKeyDown={keyHandlers}
-            onKeyUp={event => {
-               if (event.key.includes('Arrow')) {
-                  saveCursorPosition(event.target as HTMLSpanElement);
-               }
-            }}
-            onFocus={loadCursorPosition}
-            ref={lineContentRef}
+            onInput={handleInput}
+            onKeyDown={handleKey}
          >
             {line.content}
          </span>
