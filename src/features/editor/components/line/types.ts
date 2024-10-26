@@ -10,7 +10,8 @@ export interface Line {
 
 export type SetLines = Dispatch<SetStateAction<Line[]>>;
 
-export type KeyHandler = (event: KeyboardEvent) => void;
+export type PreventDefault = boolean;
+export type KeyHandler = (event: KeyboardEvent) => PreventDefault;
 
 export interface KeyMap {
    [key: string]: KeyHandler

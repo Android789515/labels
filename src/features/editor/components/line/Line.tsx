@@ -1,7 +1,8 @@
 import { type FormEvent, type KeyboardEvent } from 'react';
 
-import { type Line as LineType, type SetLines, type KeyMap } from './types';
-import { addLine, removeLine, updateLine } from '../../utils';
+import { type Line as LineType, type SetLines } from './types';
+import { updateLine } from '../../utils';
+import { getKeyMap } from './utils';
 
 import styles from './Line.module.css';
 
@@ -16,16 +17,16 @@ export const Line = ({ line, setLines }: Props) => {
    };
 
    const handleKey = (event: KeyboardEvent) => {
-      const keymap: KeyMap = {
-         Enter: () => setLines(addLine(line.number - 1)),
-         Backspace: () => setLines(removeLine(line.id)),
-      };
+      const keymap = getKeyMap(line, setLines);
 
       const wasKeyInMapPressed = Object.keys(keymap).includes(event.key);
 
       if (wasKeyInMapPressed) {
-         event.preventDefault();
-         keymap[event.key](event);
+         const preventDefault = keymap[event.key](event);
+
+         if (preventDefault) {
+            event.preventDefault();
+         }
       }
    };
 
