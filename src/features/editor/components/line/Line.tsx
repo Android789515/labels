@@ -13,7 +13,42 @@ interface Props {
 }
 
 export const Line = ({ line, setLines }: Props) => {
+   const cursorPositionRef = useRef(0);
+
+   const setCursorPosition = (element: HTMLElement) => {
+      const selection = window.getSelection();
+      const range = selection?.getRangeAt(0);
+
+      if (range) {
+         const clonedRange = range.cloneRange();
+         clonedRange.selectNodeContents(element);
+         clonedRange.setEnd(range.endContainer, range.endOffset);
+
+         const cursorPosition = clonedRange.toString().length;
+
+         cursorPositionRef.current = cursorPosition;
+      }
+   };
+
    const lineRef = useRef<HTMLSpanElement>(null);
+
+   const applyCursorPosition = () => {
+      const selection = window.getSelection();
+      const range = document.createRange();
+
+      const line = lineRef.current;
+      const hasText = line?.childNodes.length;
+
+      if (hasText) {
+         range.setStart(line.childNodes[ 0 ], cursorPositionRef.current);
+         range.collapse(true);
+
+         selection?.removeAllRanges();
+         selection?.addRange(range);
+      }
+   };
+
+   useEffect(applyCursorPosition, [ cursorPositionRef.current ]);
 
    const onMount = () => {
       lineRef.current?.focus();
@@ -23,6 +58,8 @@ export const Line = ({ line, setLines }: Props) => {
 
    const handleInput = (event: FormEvent<HTMLSpanElement>) => {
       setLines(updateLine(line.id, event));
+
+      setCursorPosition(event.target as HTMLSpanElement);
    };
 
    const handleKey = (event: KeyboardEvent) => {
@@ -31,7 +68,7 @@ export const Line = ({ line, setLines }: Props) => {
       const wasKeyInMapPressed = Object.keys(keymap).includes(event.key);
 
       if (wasKeyInMapPressed) {
-         const preventDefault = keymap[event.key](event);
+         const preventDefault = keymap[ event.key ](event);
 
          if (preventDefault) {
             event.preventDefault();
@@ -55,6 +92,7 @@ export const Line = ({ line, setLines }: Props) => {
             suppressContentEditableWarning
             onInput={handleInput}
             onKeyDown={handleKey}
+            onFocus={applyCursorPosition}
             ref={lineRef}
          >
             {line.content}

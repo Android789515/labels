@@ -1,6 +1,22 @@
 import { type KeyMap, type Line, type SetLines } from './types';
 import { addLine, removeLine } from 'features/editor/utils';
 
+const focusLine = (lineElement: HTMLSpanElement, lineNumber: number) => {
+   const linesList = lineElement.parentNode?.parentNode?.parentNode as HTMLUListElement;
+   const lines = linesList.childNodes;
+
+   const lineIndex = lineNumber - 1;
+   const lineToFocus = lines[lineIndex].firstChild?.lastChild as HTMLSpanElement;
+
+   if (lineToFocus) {
+      lineToFocus.focus();
+
+      return true;
+   } else {
+      return false;
+   }
+};
+
 export const getKeyMap = (line: Line, setLines: SetLines): KeyMap => {
    return {
       Enter: () => {
@@ -9,17 +25,24 @@ export const getKeyMap = (line: Line, setLines: SetLines): KeyMap => {
       },
       Backspace: event => {
          const lineElement = event.target as HTMLSpanElement;
-         const previousLine = lineElement
-            .parentNode?.parentNode?.previousSibling?.firstChild?.lastChild as HTMLSpanElement;
-
-         if (previousLine) {
+         
+         if (focusLine(lineElement, line.number - 1)) {
             setLines(removeLine(line.id));
 
-            previousLine.focus();
             return true;
          } else {
             return false;
          }
+      },
+      ArrowUp: event => {
+         const lineElement = event.target as HTMLSpanElement;
+         
+         return focusLine(lineElement, line.number - 1);
+      },
+      ArrowDown: event => {
+         const lineElement = event.target as HTMLSpanElement;
+
+         return focusLine(lineElement, line.number + 1)
       },
    };
 };
