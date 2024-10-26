@@ -1,4 +1,5 @@
 import { type FormEvent, type KeyboardEvent } from 'react';
+import { useRef, useEffect } from 'react';
 
 import { type Line as LineType, type SetLines } from './types';
 import { updateLine } from '../../utils';
@@ -12,6 +13,14 @@ interface Props {
 }
 
 export const Line = ({ line, setLines }: Props) => {
+   const lineRef = useRef<HTMLSpanElement>(null);
+
+   const onMount = () => {
+      lineRef.current?.focus();
+   };
+
+   useEffect(onMount, []);
+
    const handleInput = (event: FormEvent<HTMLSpanElement>) => {
       setLines(updateLine(line.id, event));
    };
@@ -46,6 +55,7 @@ export const Line = ({ line, setLines }: Props) => {
             suppressContentEditableWarning
             onInput={handleInput}
             onKeyDown={handleKey}
+            ref={lineRef}
          >
             {line.content}
          </span>
