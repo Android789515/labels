@@ -40,7 +40,7 @@ export const Line = ({ line, setLines }: Props) => {
       const hasText = line?.childNodes.length;
 
       if (hasText) {
-         range.setStart(line.childNodes[ 0 ], cursorPositionRef.current);
+         range.setStart(line.childNodes[0], cursorPositionRef.current);
          range.collapse(true);
 
          selection?.removeAllRanges();
@@ -76,6 +76,16 @@ export const Line = ({ line, setLines }: Props) => {
       }
    };
 
+   const handleLeftAndRightArrowKeys = (event: KeyboardEvent) => {
+      const wereLeftOrRightArrowsPressed =
+         event.key === 'ArrowLeft'
+         || event.key === 'ArrowRight';
+
+      if (wereLeftOrRightArrowsPressed) {
+         setCursorPosition(event.target as HTMLSpanElement);
+      }
+   };
+
    return (
       <p
          className={styles.line}
@@ -92,6 +102,7 @@ export const Line = ({ line, setLines }: Props) => {
             suppressContentEditableWarning
             onInput={handleInput}
             onKeyDown={handleKey}
+            onKeyUp={handleLeftAndRightArrowKeys}
             onFocus={applyCursorPosition}
             ref={lineRef}
          >
