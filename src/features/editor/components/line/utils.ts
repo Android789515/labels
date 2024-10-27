@@ -1,19 +1,20 @@
 import { type KeyMap, type Line, type SetLines } from './types';
 import { addLine, removeLine } from 'features/editor/utils';
 
-const focusLine = (lineElement: HTMLSpanElement, lineNumber: number) => {
-   const linesList = lineElement.parentNode?.parentNode?.parentNode as HTMLUListElement;
-   const lines = linesList.childNodes;
+export const getCursorPosition = (element: HTMLElement): number => {
+   const selection = window.getSelection();
+   const range = selection?.getRangeAt(0);
 
-   const lineIndex = lineNumber - 1;
-   const lineToFocus = lines[lineIndex].firstChild?.lastChild as HTMLSpanElement;
+   if (range) {
+      const clonedRange = range.cloneRange();
+      clonedRange.selectNodeContents(element);
+      clonedRange.setEnd(range.endContainer, range.endOffset);
 
-   if (lineToFocus) {
-      lineToFocus.focus();
+      const cursorPosition = clonedRange.toString().length;
 
-      return true;
+      return cursorPosition;
    } else {
-      return false;
+      return 0;
    }
 };
 

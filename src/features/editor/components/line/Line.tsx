@@ -3,7 +3,7 @@ import { useRef, useEffect } from 'react';
 
 import { type Line as LineType, type SetLines } from './types';
 import { updateLine } from '../../utils';
-import { getKeyMap } from './utils';
+import { getKeyMap, getCursorPosition } from './utils';
 
 import styles from './Line.module.css';
 
@@ -14,21 +14,6 @@ interface Props {
 
 export const Line = ({ line, setLines }: Props) => {
    const cursorPositionRef = useRef(0);
-
-   const setCursorPosition = (element: HTMLElement) => {
-      const selection = window.getSelection();
-      const range = selection?.getRangeAt(0);
-
-      if (range) {
-         const clonedRange = range.cloneRange();
-         clonedRange.selectNodeContents(element);
-         clonedRange.setEnd(range.endContainer, range.endOffset);
-
-         const cursorPosition = clonedRange.toString().length;
-
-         cursorPositionRef.current = cursorPosition;
-      }
-   };
 
    const lineRef = useRef<HTMLSpanElement>(null);
 
@@ -59,7 +44,7 @@ export const Line = ({ line, setLines }: Props) => {
    const handleInput = (event: FormEvent<HTMLSpanElement>) => {
       setLines(updateLine(line.id, event));
 
-      setCursorPosition(event.target as HTMLSpanElement);
+      cursorPositionRef.current = getCursorPosition(event.target as HTMLSpanElement);
    };
 
    const handleKey = (event: KeyboardEvent) => {
@@ -68,7 +53,7 @@ export const Line = ({ line, setLines }: Props) => {
       const wasKeyInMapPressed = Object.keys(keymap).includes(event.key);
 
       if (wasKeyInMapPressed) {
-         const preventDefault = keymap[ event.key ](event);
+         const preventDefault = keymap[event.key](event);
 
          if (preventDefault) {
             event.preventDefault();
@@ -82,7 +67,7 @@ export const Line = ({ line, setLines }: Props) => {
          || event.key === 'ArrowRight';
 
       if (wereLeftOrRightArrowsPressed) {
-         setCursorPosition(event.target as HTMLSpanElement);
+         cursorPositionRef.current = getCursorPosition(event.target as HTMLSpanElement);
       }
    };
 
