@@ -24,9 +24,9 @@ export const Line = ({ line, setLines }: Props) => {
       const range = document.createRange();
 
       const lineElement = lineRef.current;
-      const hasText = lineElement?.childNodes.length;
+      const hasContent = lineElement?.childNodes.length;
 
-      if (hasText) {
+      if (hasContent) {
          range.setStart(lineElement.childNodes[0], line.cursorPosition);
          range.collapse(true);
 
