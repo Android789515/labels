@@ -87,7 +87,7 @@ export const Line = ({ line, setLines }: Props) => {
             onInput={handleInput}
             onKeyDown={handleKey}
             onKeyUp={handleLeftAndRightArrowKeys}
-            // onFocus={() => console.log('Focused line', line.number)}
+            onFocus={applyCursorPosition}
             ref={lineRef}
          >
             {line.content}
