@@ -4,12 +4,12 @@ import { v4 as newUUID } from 'uuid';
 import { type UUID } from 'types';
 import { type Line } from './components/line/types';
 
-export const newBlankLine = (nextNumber: number): Line => {
+export const newBlankLine = (nextNumber: number, content: string = ''): Line => {
    return {
       id: newUUID(),
       number: nextNumber,
       active: true,
-      content: '',
+      content,
       cursorPosition: 0,
    };
 };
@@ -64,9 +64,16 @@ export const addLine = (lineIndex: number) => {
 
       const newLineNumber = lineIndex + 2;
 
+      const currentLine = newLines[lineIndex];
+      const contentAfterCursor = currentLine.content.slice(currentLine.cursorPosition);
+
       return [
-         ...newLines.slice(0, lineIndex + 1),
-         newBlankLine(newLineNumber),
+         ...newLines.slice(0, lineIndex),
+         {
+            ...currentLine,
+            content: currentLine.content.slice(0, currentLine.cursorPosition),
+         },
+         newBlankLine(newLineNumber, contentAfterCursor),
          ...newLines.slice(lineIndex + 1),
       ];
    };
