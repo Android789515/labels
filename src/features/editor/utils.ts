@@ -4,33 +4,88 @@ import { v4 as newUUID } from 'uuid';
 import { type UUID } from 'types';
 import { type Line } from './components/line/types';
 
-export const newBlankLine = () => {
+export const newBlankLine = (nextNumber: number): Line => {
    return {
       id: newUUID(),
+      number: nextNumber,
+      active: true,
       content: '',
-      number: 1,
+      cursorPosition: 0,
+   };
+};
+
+const clearActiveLine = (lines: Line[]): Line[] => {
+   return lines.map(line => {
+      return {
+         ...line,
+         active: false,
+      };
+   });
+};
+
+export const setCursorPosition = (lineID: UUID, cursorPosition: number) => {
+   return (prevLines: Line[]): Line[] => {
+      return prevLines.map(line => {
+         if (line.id === lineID) {
+            return {
+               ...line,
+               cursorPosition,
+            };
+         } else {
+            return line;
+         }
+      });
+   };
+};
+
+export const setActiveLine = (lineNumber: number, placeCursorAt?: number) => {
+   return (prevLines: Line[]): Line[] => {
+      const newLines = clearActiveLine(prevLines);
+
+      return newLines.map(line => {
+         if (line.number === lineNumber) {
+            const cursorPosition = placeCursorAt || line.cursorPosition;
+
+            return {
+               ...line,
+               active: true,
+               cursorPosition,
+            };
+         } else {
+            return line;
+         }
+      });
    };
 };
 
 export const addLine = (lineIndex: number) => {
    return (prevLines: Line[]) => {
+      const newLines = clearActiveLine(prevLines);
+
+      const newLineNumber = lineIndex + 2;
+
       return [
-         ...prevLines.slice(0, lineIndex + 1),
-         newBlankLine(),
-         ...prevLines.slice(lineIndex + 1),
+         ...newLines.slice(0, lineIndex + 1),
+         newBlankLine(newLineNumber),
+         ...newLines.slice(lineIndex + 1),
       ];
    };
 };
 
-const moveContentToLineBefore = (lines: Line[], content: string): Line[] => {
-   const lineBefore = lines.at(-1)!;
-   return [
-      ...lines.slice(0, lines.length - 1),
-      {
-         ...lineBefore,
-         content: lineBefore.content + content,
-      },
-   ];
+const moveContentToLineBefore = (prevLines: Line[], content: string): Line[] => {
+   const newLines = clearActiveLine(prevLines);
+
+   const lineBefore = newLines.at(-1)!;
+
+   const updatedLineBefore = {
+      ...lineBefore,
+      content: lineBefore.content + content,
+   };
+
+   return setActiveLine(updatedLineBefore.number, lineBefore.content.length)([
+      ...newLines.slice(0, newLines.length - 1),
+      updatedLineBefore,
+   ]);
 };
 
 export const removeLine = (lineID: UUID) => {

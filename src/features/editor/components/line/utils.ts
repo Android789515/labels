@@ -1,5 +1,5 @@
 import { type KeyMap, type Line, type SetLines } from './types';
-import { addLine, removeLine } from 'features/editor/utils';
+import { addLine, removeLine, setActiveLine } from 'features/editor/utils';
 
 export const getCursorPosition = (element: HTMLElement): number => {
    const selection = window.getSelection();
@@ -24,7 +24,7 @@ const getLines = (line: HTMLSpanElement): HTMLUListElement => {
 
 const hasLine = (lines: HTMLUListElement, lineNumber: number): HTMLSpanElement | null => {
    const lineIndex = lineNumber - 1;
-   const lineToFocus = lines.childNodes[ lineIndex ].firstChild?.lastChild as HTMLSpanElement;
+   const lineToFocus = lines.childNodes[lineIndex]?.firstChild?.lastChild as HTMLSpanElement;
    
    return lineToFocus;
 };
@@ -44,38 +44,21 @@ export const getKeyMap = (line: Line, setLines: SetLines): KeyMap => {
 
          if (atLineStart && prevLine) {
             setLines(removeLine(line.id));
-            prevLine.focus();
 
             return true;
          } else {
             return false;
          }
       },
-      ArrowUp: event => {
-         const lineElement = event.target as HTMLSpanElement;
+      ArrowUp: () => {
+         setLines(setActiveLine(line.number - 1));
 
-         const prevLine = hasLine(getLines(lineElement), line.number - 1);
-
-         if (prevLine) {
-            prevLine.focus();
-
-            return true;
-         } else {
-            return false;
-         }
+         return true;
       },
-      ArrowDown: event => {
-         const lineElement = event.target as HTMLSpanElement;
+      ArrowDown: () => {
+         setLines(setActiveLine(line.number + 1));
 
-         const nextLine = hasLine(getLines(lineElement), line.number + 1);
-
-         if (nextLine) {
-            nextLine.focus();
-
-            return true;
-         } else {
-            return false;
-         }
+         return true;
       },
    };
 };

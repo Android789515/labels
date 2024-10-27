@@ -4,8 +4,10 @@ import { type UUID } from 'types'
 
 export interface Line {
    id: UUID;
-   content: string;
    number: number;
+   active: boolean;
+   content: string;
+   cursorPosition: number;
 }
 
 export type SetLines = Dispatch<SetStateAction<Line[]>>;

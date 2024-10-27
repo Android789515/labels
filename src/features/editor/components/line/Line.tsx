@@ -2,7 +2,7 @@ import { type FormEvent, type KeyboardEvent } from 'react';
 import { useRef, useEffect } from 'react';
 
 import { type Line as LineType, type SetLines } from './types';
-import { updateLine } from '../../utils';
+import { updateLine, setCursorPosition } from '../../utils';
 import { getKeyMap, getCursorPosition } from './utils';
 
 import styles from './Line.module.css';
@@ -13,19 +13,21 @@ interface Props {
 }
 
 export const Line = ({ line, setLines }: Props) => {
-   const cursorPositionRef = useRef(0);
-
    const lineRef = useRef<HTMLSpanElement>(null);
 
-   const applyCursorPosition = () => {
+   if (line.active) {
+      lineRef.current?.focus();
+   }
+
+   const applyCursorPosition = (): void => {
       const selection = window.getSelection();
       const range = document.createRange();
 
-      const line = lineRef.current;
-      const hasText = line?.childNodes.length;
+      const lineElement = lineRef.current;
+      const hasText = lineElement?.childNodes.length;
 
       if (hasText) {
-         range.setStart(line.childNodes[0], cursorPositionRef.current);
+         range.setStart(lineElement.childNodes[0], line.cursorPosition);
          range.collapse(true);
 
          selection?.removeAllRanges();
@@ -33,18 +35,13 @@ export const Line = ({ line, setLines }: Props) => {
       }
    };
 
-   useEffect(applyCursorPosition, [ cursorPositionRef.current ]);
-
-   const onMount = () => {
-      lineRef.current?.focus();
-   };
-
-   useEffect(onMount, []);
+   useEffect(applyCursorPosition, [ line.content, line.cursorPosition ])
 
    const handleInput = (event: FormEvent<HTMLSpanElement>) => {
       setLines(updateLine(line.id, event));
 
-      cursorPositionRef.current = getCursorPosition(event.target as HTMLSpanElement);
+      const updatedCursorPosition = getCursorPosition(event.target as HTMLSpanElement);
+      setLines(setCursorPosition(line.id, updatedCursorPosition));
    };
 
    const handleKey = (event: KeyboardEvent) => {
@@ -67,7 +64,9 @@ export const Line = ({ line, setLines }: Props) => {
          || event.key === 'ArrowRight';
 
       if (wereLeftOrRightArrowsPressed) {
-         cursorPositionRef.current = getCursorPosition(event.target as HTMLSpanElement);
+         const newCursorPosition = getCursorPosition(event.target as HTMLSpanElement);
+
+         setLines(setCursorPosition(line.id, newCursorPosition));
       }
    };
 
@@ -88,7 +87,7 @@ export const Line = ({ line, setLines }: Props) => {
             onInput={handleInput}
             onKeyDown={handleKey}
             onKeyUp={handleLeftAndRightArrowKeys}
-            onFocus={applyCursorPosition}
+            // onFocus={() => console.log('Focused line', line.number)}
             ref={lineRef}
          >
             {line.content}

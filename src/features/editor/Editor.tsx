@@ -14,7 +14,7 @@ interface Props {
 }
 
 export const Editor = ({ setLabels }: Props) => {
-   const [ lines, setLines ] = useState([newBlankLine()]);
+   const [ lines, setLines ] = useState([newBlankLine(1)]);
 
    const previewExpressionResult = () => {
       const labels = lines.reduce<Label[]>((labels, { content }) => {
