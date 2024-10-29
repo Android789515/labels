@@ -29,20 +29,6 @@ const hasLine = (lines: HTMLUListElement, lineNumber: number): HTMLSpanElement |
    return lineToFocus;
 };
 
-const canMoveToLine = (lineElement: HTMLSpanElement, currentLine: number, nextLine: number): boolean | HTMLSpanElement => {
-   const cursorPosition = getCursorPosition(lineElement);
-
-   const nextLineIsAfter = currentLine < nextLine;
-
-   const atLineBoundary = nextLineIsAfter
-      ? cursorPosition === lineElement.textContent?.length
-      : cursorPosition === 0;
-
-   const prevLine = hasLine(getLines(lineElement), nextLine);
-
-   return atLineBoundary && prevLine || false;
-};
-
 export const getKeyMap = (line: Line, setLines: SetLines): KeyMap => {
    return {
       Enter: () => {
@@ -50,7 +36,10 @@ export const getKeyMap = (line: Line, setLines: SetLines): KeyMap => {
          return true;
       },
       Backspace: event => {
-         const canRemoveLine = canMoveToLine(event.target as HTMLSpanElement, line.number, line.number - 1);
+         const lineElement = event.target as HTMLSpanElement;
+         const prevLine = hasLine(getLines(lineElement), line.number - 1);
+
+         const canRemoveLine = line.cursorPosition === 0 && prevLine;
 
          if (canRemoveLine) {
             setLines(removeLine(line.number));
@@ -61,7 +50,10 @@ export const getKeyMap = (line: Line, setLines: SetLines): KeyMap => {
          }
       },
       Delete: event => {
-         const canRemoveLine = canMoveToLine(event.target as HTMLSpanElement, line.number, line.number + 1);
+         const lineElement = event.target as HTMLSpanElement;
+         const nextLine = hasLine(getLines(lineElement), line.number + 1);
+
+         const canRemoveLine = line.cursorPosition === lineElement.textContent?.length && nextLine;
 
          if (canRemoveLine) {
             setLines(removeLine(line.number + 1));
@@ -80,6 +72,34 @@ export const getKeyMap = (line: Line, setLines: SetLines): KeyMap => {
          setLines(setActiveLine(line.number + 1));
 
          return true;
+      },
+      ArrowLeft: event => {
+         const lineElement = event.target as HTMLSpanElement;
+         const prevLine = hasLine(getLines(lineElement), line.number - 1);
+
+         const canFocusPrevLine = line.cursorPosition === 0 && prevLine;
+
+         if (canFocusPrevLine) {
+            setLines(setActiveLine(line.number - 1, prevLine.textContent?.length || 0));
+
+            return true;
+         }
+
+         return false;
+      },
+      ArrowRight: event => {
+         const lineElement = event.target as HTMLSpanElement;
+         const nextLine = hasLine(getLines(lineElement), line.number + 1);
+
+         const canFocusNextLine = line.cursorPosition === lineElement.textContent?.length && nextLine;
+
+         if (canFocusNextLine) {
+            setLines(setActiveLine(line.number + 1, 0));
+
+            return true;
+         }
+
+         return false;
       },
    };
 };

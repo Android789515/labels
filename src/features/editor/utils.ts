@@ -44,7 +44,7 @@ export const setActiveLine = (lineNumber: number, placeCursorAt?: number) => {
 
       return newLines.map(line => {
          if (line.number === lineNumber) {
-            const cursorPosition = placeCursorAt || line.cursorPosition;
+            const cursorPosition = placeCursorAt !== undefined ? placeCursorAt : line.cursorPosition;
 
             return {
                ...line,
