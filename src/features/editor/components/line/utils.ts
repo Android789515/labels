@@ -29,6 +29,20 @@ const hasLine = (lines: HTMLUListElement, lineNumber: number): HTMLSpanElement |
    return lineToFocus;
 };
 
+const canMoveToLine = (lineElement: HTMLSpanElement, currentLine: number, nextLine: number): boolean | HTMLSpanElement => {
+   const cursorPosition = getCursorPosition(lineElement);
+
+   const nextLineIsAfter = currentLine < nextLine;
+
+   const atLineBoundary = nextLineIsAfter
+      ? cursorPosition === lineElement.textContent?.length
+      : cursorPosition === 0;
+
+   const prevLine = hasLine(getLines(lineElement), nextLine);
+
+   return atLineBoundary && prevLine || false;
+};
+
 export const getKeyMap = (line: Line, setLines: SetLines): KeyMap => {
    return {
       Enter: () => {
@@ -36,13 +50,9 @@ export const getKeyMap = (line: Line, setLines: SetLines): KeyMap => {
          return true;
       },
       Backspace: event => {
-         const lineElement = event.target as HTMLSpanElement;
+         const canRemoveLine = canMoveToLine(event.target as HTMLSpanElement, line.number, line.number - 1);
 
-         const atLineStart = getCursorPosition(lineElement) === 0;
-
-         const prevLine = hasLine(getLines(lineElement), line.number - 1);
-
-         if (atLineStart && prevLine) {
+         if (canRemoveLine) {
             setLines(removeLine(line.number));
 
             return true;
@@ -51,13 +61,9 @@ export const getKeyMap = (line: Line, setLines: SetLines): KeyMap => {
          }
       },
       Delete: event => {
-         const lineElement = event.target as HTMLSpanElement;
+         const canRemoveLine = canMoveToLine(event.target as HTMLSpanElement, line.number, line.number + 1);
 
-         const atLineEnd = getCursorPosition(lineElement) === lineElement.textContent?.length || 0;
-
-         const nextLine = hasLine(getLines(lineElement), line.number + 1);
-
-         if (atLineEnd && nextLine) {
+         if (canRemoveLine) {
             setLines(removeLine(line.number + 1));
 
             return true;
