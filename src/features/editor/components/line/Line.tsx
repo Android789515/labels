@@ -45,6 +45,12 @@ export const Line = ({ line, setLines }: Props) => {
    };
 
    const handleKey = (event: KeyboardEvent) => {
+      const hasSelection = window.getSelection()?.toString().length;
+
+      if (hasSelection) {
+         return;
+      }
+
       const keymap = getKeyMap(line, setLines);
 
       const wasKeyInMapPressed = Object.keys(keymap).includes(event.key);
@@ -58,7 +64,7 @@ export const Line = ({ line, setLines }: Props) => {
       }
    };
 
-   const handleLeftAndRightArrowKeys = (event: KeyboardEvent) => {
+   const handleKeyUp = (event: KeyboardEvent) => {
       const wereLeftOrRightArrowsPressed =
          event.key === 'ArrowLeft'
          || event.key === 'ArrowRight';
@@ -86,7 +92,7 @@ export const Line = ({ line, setLines }: Props) => {
             suppressContentEditableWarning
             onInput={handleInput}
             onKeyDown={handleKey}
-            onKeyUp={handleLeftAndRightArrowKeys}
+            onKeyUp={handleKeyUp}
             onFocus={applyCursorPosition}
             ref={lineRef}
          >
