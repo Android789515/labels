@@ -43,7 +43,22 @@ export const getKeyMap = (line: Line, setLines: SetLines): KeyMap => {
          const prevLine = hasLine(getLines(lineElement), line.number - 1);
 
          if (atLineStart && prevLine) {
-            setLines(removeLine(line.id));
+            setLines(removeLine(line.number));
+
+            return true;
+         } else {
+            return false;
+         }
+      },
+      Delete: event => {
+         const lineElement = event.target as HTMLSpanElement;
+
+         const atLineEnd = getCursorPosition(lineElement) === lineElement.textContent?.length || 0;
+
+         const nextLine = hasLine(getLines(lineElement), line.number + 1);
+
+         if (atLineEnd && nextLine) {
+            setLines(removeLine(line.number + 1));
 
             return true;
          } else {

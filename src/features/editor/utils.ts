@@ -95,10 +95,10 @@ const moveContentToLineBefore = (prevLines: Line[], content: string): Line[] => 
    ]);
 };
 
-export const removeLine = (lineID: UUID) => {
+export const removeLine = (lineNumber: number) => {
    return (prevLines: Line[]) => {
       return prevLines.reduce<Line[]>((newLines, line) => {
-         const isLineToRemove = line.id === lineID;
+         const isLineToRemove = line.number === lineNumber;
 
          if (isLineToRemove) {
             return moveContentToLineBefore(newLines, line.content);
