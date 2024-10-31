@@ -38,7 +38,12 @@ export const Line = ({ line, setLines }: Props) => {
    useEffect(applyCursorPosition, [ line.content, line.cursorPosition ])
 
    const handleInput = (event: FormEvent<HTMLSpanElement>) => {
-      setLines(updateLine(line.id, event));
+      const lineElement = event.target as HTMLSpanElement;
+
+      setLines(updateLine({
+         ...line,
+         content: lineElement.textContent || '',
+      }));
 
       const updatedCursorPosition = getCursorPosition(event.target as HTMLSpanElement);
       setLines(setCursorPosition(line.id, updatedCursorPosition));

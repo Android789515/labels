@@ -1,4 +1,3 @@
-import { type FormEvent } from 'react';
 import { v4 as newUUID } from 'uuid';
 
 import { type UUID } from 'types';
@@ -112,18 +111,13 @@ export const removeLine = (lineNumber: number) => {
    };
 };
 
-export const updateLine = (lineID: UUID, event: FormEvent<HTMLSpanElement>) => {
+export const updateLine = (newLine: Line) => {
    return (prevLines: Line[]) => {
       return prevLines.map(line => {
-         const isLineToUpdate = line.id === lineID;
+         const isLineToUpdate = line.id === newLine.id;
 
          if (isLineToUpdate) {
-            const contentElement = event.target as HTMLSpanElement;
-
-            return {
-               ...line,
-               content: contentElement.textContent || '',
-            };
+            return newLine;
          } else {
             return line;
          }
