@@ -11,6 +11,10 @@
    padding: .25em .5em;
 }
 
+.lineNumber {
+   user-select: none;
+}
+
 .lineContent {
    cursor: text;
 
