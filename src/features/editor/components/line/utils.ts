@@ -1,5 +1,5 @@
 import { type KeyMap, type Line, type SetLines } from './types';
-import { addLine, removeLine, setActiveLine } from 'features/editor/utils';
+import { addLine, removeLine, setActiveLine, updateLine } from 'features/editor/utils';
 
 export const getCursorPosition = (element: HTMLElement): number => {
    const selection = window.getSelection();
@@ -29,6 +29,8 @@ const hasLine = (lines: HTMLUListElement, lineNumber: number): HTMLSpanElement |
    return lineToFocus;
 };
 
+const tabKeyValue = '\u00a0\u00a0\u00a0\u00a0';
+
 export const getKeyMap = (line: Line, setLines: SetLines): KeyMap => {
    return {
       Enter: () => {
@@ -40,9 +42,19 @@ export const getKeyMap = (line: Line, setLines: SetLines): KeyMap => {
          const prevLine = hasLine(getLines(lineElement), line.number - 1);
 
          const canRemoveLine = line.cursorPosition === 0 && prevLine;
+         const removeTabKey = line.content.endsWith(tabKeyValue);
 
          if (canRemoveLine) {
             setLines(removeLine(line.number));
+
+            return true;
+         } else if (removeTabKey) {
+            const [ contentWithTabRemoved ] = line.content.split(tabKeyValue);
+
+            setLines(updateLine({
+               ...line,
+               content: contentWithTabRemoved,
+            }));
 
             return true;
          } else {
@@ -62,6 +74,17 @@ export const getKeyMap = (line: Line, setLines: SetLines): KeyMap => {
          } else {
             return false;
          }
+      },
+      Tab: () => {
+         const newContent = line.content + tabKeyValue;
+
+         setLines(updateLine({
+            ...line,
+            content: newContent,
+            cursorPosition: newContent.length,
+         }));
+
+         return true;
       },
       ArrowUp: () => {
          setLines(setActiveLine(line.number - 1));
