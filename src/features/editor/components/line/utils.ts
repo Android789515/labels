@@ -42,18 +42,24 @@ export const getKeyMap = (line: Line, setLines: SetLines): KeyMap => {
          const prevLine = hasLine(getLines(lineElement), line.number - 1);
 
          const canRemoveLine = line.cursorPosition === 0 && prevLine;
-         const removeTabKey = line.content.endsWith(tabKeyValue);
+         const removeTabKey = line.content.slice(0, line.cursorPosition).endsWith(tabKeyValue);
 
          if (canRemoveLine) {
             setLines(removeLine(line.number));
 
             return true;
          } else if (removeTabKey) {
-            const [ contentWithTabRemoved ] = line.content.split(tabKeyValue);
+            const tabLength = tabKeyValue.length;
+
+            const contentBeforeTab = line.content.slice(0, line.cursorPosition - tabLength);
+            const contentAfterTab = line.content.slice(line.cursorPosition);
+
+            const contentWithTabRemoved = contentBeforeTab + contentAfterTab;
 
             setLines(updateLine({
                ...line,
                content: contentWithTabRemoved,
+               cursorPosition: contentBeforeTab.length,
             }));
 
             return true;
@@ -76,12 +82,17 @@ export const getKeyMap = (line: Line, setLines: SetLines): KeyMap => {
          }
       },
       Tab: () => {
-         const newContent = line.content + tabKeyValue;
+         const contentBeforeCursor = line.content.slice(0, line.cursorPosition);
+         const contentAfterCursor = line.content.slice(line.cursorPosition);
+
+         const newContent = contentBeforeCursor
+            + tabKeyValue
+            + contentAfterCursor;
 
          setLines(updateLine({
             ...line,
             content: newContent,
-            cursorPosition: newContent.length,
+            cursorPosition: (contentBeforeCursor + tabKeyValue).length,
          }));
 
          return true;

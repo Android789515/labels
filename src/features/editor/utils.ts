@@ -61,53 +61,62 @@ export const addLine = (lineIndex: number) => {
    return (prevLines: Line[]) => {
       const newLines = clearActiveLine(prevLines);
 
-      const newLineNumber = lineIndex + 2;
+      const lineAt = newLines[lineIndex];
+      const contentAfterCursor = lineAt.content.slice(lineAt.cursorPosition);
 
-      const currentLine = newLines[lineIndex];
-      const contentAfterCursor = currentLine.content.slice(currentLine.cursorPosition);
+      const linesBefore = newLines.slice(0, lineIndex);
+
+      const currentLine = {
+         ...lineAt,
+         content: lineAt.content.slice(0, lineAt.cursorPosition),
+      };
+
+      const linesAfter = newLines.slice(lineIndex + 1).map(line => {
+
+         return {
+            ...line,
+            number: line.number + 1,
+         };
+      });
 
       return [
-         ...newLines.slice(0, lineIndex),
-         {
-            ...currentLine,
-            content: currentLine.content.slice(0, currentLine.cursorPosition),
-         },
-         newBlankLine(newLineNumber, contentAfterCursor),
-         ...newLines.slice(lineIndex + 1),
+         ...linesBefore,
+         currentLine,
+         newBlankLine(linesBefore.length + 2, contentAfterCursor),
+         ...linesAfter,
       ];
    };
 };
 
-const moveContentToLineBefore = (prevLines: Line[], content: string): Line[] => {
-   const newLines = clearActiveLine(prevLines);
-
-   const lineBefore = newLines.at(-1)!;
-
-   const updatedLineBefore = {
-      ...lineBefore,
-      content: lineBefore.content + content,
-   };
-
-   return setActiveLine(updatedLineBefore.number, lineBefore.content.length)([
-      ...newLines.slice(0, newLines.length - 1),
-      updatedLineBefore,
-   ]);
-};
-
 export const removeLine = (lineNumber: number) => {
    return (prevLines: Line[]) => {
-      return prevLines.reduce<Line[]>((newLines, line) => {
-         const isLineToRemove = line.number === lineNumber;
+      const linesBefore = prevLines.slice(0, lineNumber - 1).map(line => {
+         const isLineBeforeRemove = line.number === lineNumber - 1;
 
-         if (isLineToRemove) {
-            return moveContentToLineBefore(newLines, line.content);
+         if (isLineBeforeRemove) {
+            const currentLine = prevLines[lineNumber - 1];
+
+            return {
+               ...line,
+               active: true,
+               content: line.content + currentLine.content,
+            };
          } else {
-            return [
-               ...newLines,
-               line,
-            ];
+            return line;
          }
-      }, []);
+      });
+
+      const linesAfter = prevLines.slice(lineNumber).map(line => {
+         return {
+            ...line,
+            number: line.number - 1,
+         };
+      });
+
+      return [
+         ...linesBefore,
+         ...linesAfter,
+      ];
    };
 };
 
