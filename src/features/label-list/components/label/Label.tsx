@@ -16,16 +16,16 @@ export const Label = ({ label, setLabels }: Props) => {
       const input = event.target as HTMLInputElement;
 
       setLabels(prevLabels => {
-         return prevLabels.map(label => {
-            const isLabelToSet = label.id === label.id;
+         return prevLabels.map(newLabel => {
+            const isLabelToSet = label.id === newLabel.id;
 
             if (isLabelToSet) {
                return {
-                  ...label,
+                  ...newLabel,
                   [ keyToSet ]: input.value,
                };
             } else {
-               return label;
+               return newLabel;
             }
          });
       });
