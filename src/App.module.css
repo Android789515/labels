@@ -4,3 +4,17 @@
    --border: solid #ebebeb 1px;
    --borderRadius: .125em;
 }
+
+.modeButton.modeButton,
+.modeButton.modeButton:active {
+   color: #fff;
+
+   justify-self: center;
+
+   background: rgb(0, 140, 255);
+}
+
+.modeButton.modeButton:focus,
+.modeButton.modeButton:hover {
+   background: rgb(51, 153, 236);
+}

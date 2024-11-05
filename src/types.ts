@@ -1,4 +1,4 @@
-import { type ReactNode, type Dispatch, type SetStateAction } from 'react';
+import { type Dispatch, type SetStateAction } from 'react';
 
 export type ClassName = string;
 
@@ -11,3 +11,5 @@ export interface Label {
 }
 
 export type SetLabels = Dispatch<SetStateAction<Label[]>>;
+
+export type WorkspaceMode = 'basic' | 'advanced';
