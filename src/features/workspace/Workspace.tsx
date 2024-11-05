@@ -1,4 +1,4 @@
-import { type Label, type SetLabels } from 'types';
+import { type WorkspaceMode, type Label, type SetLabels } from 'types';
 
 import styles from './Workspace.module.css';
 
@@ -6,7 +6,7 @@ import { LabelList } from 'features/label-list';
 import { Editor } from 'features/editor';
 
 interface Props {
-   mode: 'basic' | 'advanced';
+   mode: WorkspaceMode;
    labels: Label[];
    setLabels: SetLabels;
 }
@@ -14,14 +14,9 @@ interface Props {
 export const Workspace = ({ mode, labels, setLabels }: Props) => {
    return (
       <div
-         className={`
-            ${ mode === 'basic'
-               ? styles.workspaceBasic
-               : styles.workspaceAdvanced
-            }
-         `}
+         className={styles.workspace}
       >
-         { mode === 'advanced'
+         { mode === 'basic'
             ? <LabelList
                labels={labels}
                setLabels={setLabels}
